@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict
 import logging
 from datetime import datetime
-from .course_data import course_library
+from course_data import course_library
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
