@@ -1,0 +1,70 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+
+title User Journey: Login to Logout
+
+actor User
+
+package "Application" {
+  [Frontend (UI)] as UI
+  [Backend API (FastAPI/Flask)] as API
+  [Data Processing Service] as DataProc
+  [Model Training Service] as ModelTrain
+  [Prediction Engine] as Predict
+  database "Data Storage" as DataDB
+  database "Model Storage" as ModelDB
+}
+
+package "External Services" {
+  [Yahoo Finance API] as YFinance
+  [Google AI Service] as GoogleAI
+}
+
+' Login Flow
+User --> UI : Requests Login Page
+UI --> API : Submits Credentials
+API --> API : Authenticates User
+API --> UI : Login Success/Failure
+UI --> User : Displays Menu/Dashboard (on success)
+
+' Core Application Flow (Post-Login)
+User --> UI : Requests Data/Analysis Feature
+UI --> API : Requests Data Processing
+API --> DataProc : Process Data Request
+DataProc --> YFinance : Fetch Raw Data
+YFinance --> DataProc : Raw Data
+DataProc --> DataDB : Store Processed Data
+DataProc --> API : Processed Data/Status
+API --> UI : Processed Data/Status
+UI --> User : Displays Processed Data
+
+User --> UI : Requests Prediction Feature
+UI --> API : Requests Prediction
+API --> Predict : Prediction Request
+Predict --> ModelDB : Load Model
+Predict --> DataDB : Load Input Data
+Predict --> GoogleAI : Enhance Prediction
+GoogleAI --> Predict : Enhanced Result
+Predict --> API : Prediction Result
+API --> UI : Prediction Result
+UI --> User : Displays Prediction
+
+' Example of triggering training (less direct user interaction usually)
+User -> UI : Initiates Model Retraining (Optional)
+UI -> API : Request Model Retraining
+API -> ModelTrain : Trigger Training Process
+ModelTrain --> DataDB : Load Training Data
+ModelTrain --> ModelTrain : Train Models (using various libraries)
+ModelTrain --> ModelDB : Save New Model
+ModelTrain --> API : Training Complete Status
+API --> UI : Training Complete Status
+
+' Logout Flow
+User --> UI : Requests Logout
+UI --> API : Submits Logout Request
+API --> API : Invalidates Session
+API --> UI : Logout Success
+UI --> User : Redirects to Login Page
+
+@enduml 
